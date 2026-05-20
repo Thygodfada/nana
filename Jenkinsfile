@@ -1,11 +1,6 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE_NAME = ""
-        IMAGE_TAG  = "1.1.8-6"
-    }
-
+    
     stages {
         stage('Build Docker Image') {
             steps {
@@ -18,7 +13,7 @@ pipeline {
                         passwordVariable: 'PASS'
                     )]) {
 
-                        sh "docker build -t ${USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                        sh "docker build -t ${USER}/demo-app:1.0 ."
                         sh "echo $PASS | docker login -u $USER --password-stdin"
                         sh "docker push ${USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                     }
