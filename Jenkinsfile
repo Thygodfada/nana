@@ -1,28 +1,28 @@
-stage('Build Docker Image') {
-    steps {
-        script {
-            echo "Building Docker image..."
+pipeline {
+    agent any
 
-            withCredentials([usernamePassword(
-                credentialsId: 'docker-hub-repo',
-                usernameVariable: 'USER',
-                passwordVariable: 'PASS'
-            )]) {
+    environment {
+        IMAGE_NAME = ""
+        IMAGE_TAG  = "1.1.8-6"
+    }
 
-                // Build the image
-                sh """
-                    docker build -t ${USER}/${IMAGE_NAME}:${IMAGE_TAG} .
-                """
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "Building Docker image..."
 
-                // Login to Docker Hub
-                sh """
-                    echo $PASS | docker login -u $USER --password-stdin
-                """
+                    withCredentials([usernamePassword(
+                        credentialsId: 'docker-hub-repo',
+                        usernameVariable: 'USER',
+                        passwordVariable: 'PASS'
+                    )]) {
 
-                // Push the image
-                sh """
-                    docker push ${USER}/${IMAGE_NAME}:${IMAGE_TAG}
-                """
+                        sh "docker build -t ${USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        sh "docker push ${USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                    }
+                }
             }
         }
     }
