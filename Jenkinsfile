@@ -15,7 +15,7 @@ pipeline {
 
                         sh "docker build -t ${USER}/demo-app:1.0 ."
                         sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh "docker push ${USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker push ${USER}/demo-app:1.0"
                     }
                 }
             }
